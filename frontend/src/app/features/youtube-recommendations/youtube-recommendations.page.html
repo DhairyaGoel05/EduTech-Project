@@ -1,0 +1,151 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Video Recommendations</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="refreshRecommendations()">
+        <ion-icon name="refresh-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="recommendations-content">
+  <!-- PDF Selection -->
+  <div class="pdf-selector-section">
+    <h3>Select PDF for Video Recommendations</h3>
+    <ion-segment [(ngModel)]="selectedPDFId" (ionChange)="onPDFChange($event)">
+      <ion-segment-button *ngFor="let pdf of availablePDFs" [value]="pdf.id">
+        <ion-label>{{ pdf.shortName }}</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-section" *ngIf="isLoading">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Finding relevant videos...</p>
+  </div>
+
+  <!-- Recommendations -->
+  <div class="recommendations-section" *ngIf="!isLoading && recommendations.length > 0">
+    <div class="section-header">
+      <h3>Recommended Videos</h3>
+      <p>Based on "{{ getSelectedPDF()?.name }}"</p>
+    </div>
+
+    <div class="videos-grid">
+      <div class="video-card" *ngFor="let video of recommendations" (click)="playVideo(video)">
+        <div class="video-thumbnail">
+          <img [src]="video.thumbnail" [alt]="video.title" />
+          <div class="video-duration">{{ video.duration }}</div>
+          <div class="play-overlay">
+            <ion-icon name="play-circle-outline"></ion-icon>
+          </div>
+        </div>
+        
+        <div class="video-info">
+          <h4 class="video-title">{{ video.title }}</h4>
+          <p class="video-channel">{{ video.channel }}</p>
+          <div class="video-stats">
+            <span class="views">{{ video.views }} views</span>
+            <span class="separator">•</span>
+            <span class="upload-date">{{ video.uploadDate }}</span>
+          </div>
+          <div class="relevance-score">
+            <ion-icon name="star" *ngFor="let star of getStars(video.relevanceScore)"></ion-icon>
+            <ion-icon name="star-outline" *ngFor="let star of getEmptyStars(video.relevanceScore)"></ion-icon>
+            <span class="score-text">{{ video.relevanceScore }}/5 relevance</span>
+          </div>
+        </div>
+        
+        <div class="video-actions">
+          <ion-button fill="clear" size="small" (click)="saveVideo(video); $event.stopPropagation()">
+            <ion-icon [name]="video.saved ? 'bookmark' : 'bookmark-outline'"></ion-icon>
+          </ion-button>
+          <ion-button fill="clear" size="small" (click)="shareVideo(video); $event.stopPropagation()">
+            <ion-icon name="share-outline"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Saved Videos -->
+  <div class="saved-section" *ngIf="savedVideos.length > 0">
+    <h3>Saved Videos</h3>
+    <div class="saved-videos-list">
+      <ion-item *ngFor="let video of savedVideos" button (click)="playVideo(video)">
+        <img [src]="video.thumbnail" slot="start" class="saved-thumbnail" />
+        <ion-label>
+          <h3>{{ video.title }}</h3>
+          <p>{{ video.channel }}</p>
+          <p class="saved-date">Saved {{ video.savedDate | date:'short' }}</p>
+        </ion-label>
+        <ion-button fill="clear" slot="end" (click)="removeSavedVideo(video); $event.stopPropagation()">
+          <ion-icon name="trash-outline" color="danger"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!isLoading && recommendations.length === 0">
+    <ion-icon name="play-circle-outline" class="empty-icon"></ion-icon>
+    <h3>No recommendations yet</h3>
+    <p>Select a PDF to get personalized video recommendations</p>
+  </div>
+
+  <!-- Video Player Modal -->
+  <ion-modal [isOpen]="showVideoPlayer" (didDismiss)="closeVideoPlayer()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{ currentVideo?.title }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeVideoPlayer()">
+              <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      
+      <ion-content class="video-player-content">
+        <div class="video-player" *ngIf="currentVideo">
+          <!-- In a real app, this would be a YouTube embed -->
+          <div class="video-placeholder">
+            <img [src]="currentVideo.thumbnail" [alt]="currentVideo.title" />
+            <div class="play-button" (click)="openExternalVideo()">
+              <ion-icon name="play-circle"></ion-icon>
+              <p>Tap to watch on YouTube</p>
+            </div>
+          </div>
+          
+          <div class="video-details">
+            <h2>{{ currentVideo.title }}</h2>
+            <p class="channel-name">{{ currentVideo.channel }}</p>
+            <div class="video-meta">
+              <span>{{ currentVideo.views }} views</span>
+              <span>•</span>
+              <span>{{ currentVideo.uploadDate }}</span>
+            </div>
+            <p class="video-description">{{ currentVideo.description }}</p>
+            
+            <div class="video-actions-bar">
+              <ion-button fill="outline" (click)="saveVideo(currentVideo)">
+                <ion-icon [name]="currentVideo.saved ? 'bookmark' : 'bookmark-outline'" slot="start"></ion-icon>
+                {{ currentVideo.saved ? 'Saved' : 'Save' }}
+              </ion-button>
+              <ion-button fill="outline" (click)="shareVideo(currentVideo)">
+                <ion-icon name="share-outline" slot="start"></ion-icon>
+                Share
+              </ion-button>
+            </div>
+          </div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

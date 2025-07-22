@@ -1,0 +1,65 @@
+<ion-content [fullscreen]="true" class="landing-content">
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-background"></div>
+    <div class="hero-content">
+      <div class="logo-container" #logoRef>
+        <ion-icon name="school-outline" class="logo-icon"></ion-icon>
+        <h1 class="app-title">EduLink</h1>
+      </div>
+      <p class="hero-subtitle" #subtitleRef>
+        Transform your learning experience with AI-powered education
+      </p>
+      <div class="hero-buttons" #buttonsRef>
+        <ion-button expand="block" fill="solid" color="primary" (click)="navigateToAuth('student')">
+          <ion-icon name="person-outline" slot="start"></ion-icon>
+          Join as Student
+        </ion-button>
+        <ion-button expand="block" fill="outline" color="primary" (click)="navigateToAuth('teacher')">
+          <ion-icon name="people-outline" slot="start"></ion-icon>
+          Join as Teacher
+        </ion-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features Section -->
+  <div class="features-section" #featuresRef>
+    <div class="container">
+      <h2 class="section-title">Powerful Features</h2>
+      <div class="features-grid">
+        <div class="feature-card" *ngFor="let feature of features">
+          <div class="feature-icon">
+            <ion-icon [name]="feature.icon"></ion-icon>
+          </div>
+          <h3>{{ feature.title }}</h3>
+          <p>{{ feature.description }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Section -->
+  <div class="stats-section" #statsRef>
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item" *ngFor="let stat of stats">
+          <h3 class="stat-number">{{ stat.number }}</h3>
+          <p class="stat-label">{{ stat.label }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA Section -->
+  <div class="cta-section" #ctaRef>
+    <div class="container">
+      <h2>Ready to revolutionize your learning?</h2>
+      <p>Join thousands of students and teachers already using EduLink</p>
+      <ion-button size="large" fill="solid" color="secondary" (click)="navigateToAuth('student')">
+        Get Started Now
+        <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

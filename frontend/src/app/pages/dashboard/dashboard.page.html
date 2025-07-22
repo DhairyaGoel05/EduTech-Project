@@ -1,0 +1,109 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Dashboard</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">
+        <ion-icon name="log-out-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="dashboard-content">
+  <!-- User Profile Header -->
+  <div class="profile-header">
+    <div class="profile-info">
+      <div class="avatar">
+        <ion-icon [name]="currentUser?.userType === 'teacher' ? 'people-outline' : 'person-outline'"></ion-icon>
+      </div>
+      <div class="user-details">
+        <h2>Welcome, {{ currentUser?.fullName }}!</h2>
+        <p class="user-type">{{ currentUser?.userType === 'teacher' ? 'Teacher' : 'Student' }}</p>
+        <p class="institution">{{ currentUser?.institution }}</p>
+      </div>
+    </div>
+    <div class="date-info">
+      <p>{{ currentDate | date:'fullDate' }}</p>
+    </div>
+  </div>
+
+  <!-- Quick Stats -->
+  <div class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-card" *ngFor="let stat of stats">
+        <div class="stat-icon">
+          <ion-icon [name]="stat.icon"></ion-icon>
+        </div>
+        <div class="stat-info">
+          <h3>{{ stat.value }}</h3>
+          <p>{{ stat.label }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features Grid -->
+  <div class="features-section">
+    <h3 class="section-title">Features</h3>
+    <div class="features-grid">
+      <ion-card 
+        class="feature-card" 
+        *ngFor="let feature of features" 
+        (click)="navigateToFeature(feature.route)"
+        button>
+        <div class="feature-icon">
+          <ion-icon [name]="feature.icon"></ion-icon>
+        </div>
+        <ion-card-header>
+          <ion-card-title>{{ feature.title }}</ion-card-title>
+          <ion-card-subtitle>{{ feature.description }}</ion-card-subtitle>
+        </ion-card-header>
+      </ion-card>
+    </div>
+  </div>
+
+  <!-- Recent Activity -->
+  <div class="activity-section" *ngIf="recentActivity.length > 0">
+    <h3 class="section-title">Recent Activity</h3>
+    <ion-list>
+      <ion-item *ngFor="let activity of recentActivity">
+        <ion-icon [name]="activity.icon" slot="start"></ion-icon>
+        <ion-label>
+          <h3>{{ activity.title }}</h3>
+          <p>{{ activity.description }}</p>
+          <p class="activity-time">{{ activity.time | date:'short' }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <!-- Teacher Specific Section -->
+  <div class="teacher-section" *ngIf="currentUser?.userType === 'teacher'">
+    <h3 class="section-title">Teacher Tools</h3>
+    <div class="teacher-tools">
+      <ion-button expand="block" fill="outline" (click)="navigateToFeature('/test-generator')">
+        <ion-icon name="create-outline" slot="start"></ion-icon>
+        Create New Test
+      </ion-button>
+      <ion-button expand="block" fill="outline" (click)="viewStudents()">
+        <ion-icon name="people-outline" slot="start"></ion-icon>
+        View Students
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Student Specific Section -->
+  <div class="student-section" *ngIf="currentUser?.userType === 'student'">
+    <h3 class="section-title">Learning Progress</h3>
+    <div class="progress-cards">
+      <div class="progress-card">
+        <h4>Study Streak</h4>
+        <div class="progress-value">{{ studyStreak }} days</div>
+      </div>
+      <div class="progress-card">
+        <h4>Tests Completed</h4>
+        <div class="progress-value">{{ testsCompleted }}</div>
+      </div>
+    </div>
+  </div>
+</ion-content>

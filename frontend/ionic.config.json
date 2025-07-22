@@ -1,0 +1,7 @@
+{
+  "name": "edulink",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

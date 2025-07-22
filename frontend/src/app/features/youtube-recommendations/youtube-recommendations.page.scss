@@ -1,0 +1,370 @@
+.recommendations-content {
+  --background: #f8fafc;
+}
+
+.pdf-selector-section {
+  background: white;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.pdf-selector-section h3 {
+  margin: 0 0 1rem 0;
+  color: var(--ion-color-dark);
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.pdf-selector-section ion-segment {
+  --background: #f8fafc;
+  border-radius: 8px;
+}
+
+.loading-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.loading-section ion-spinner {
+  margin-bottom: 1rem;
+}
+
+.loading-section p {
+  color: var(--ion-color-medium);
+  font-size: 1rem;
+}
+
+.recommendations-section {
+  padding: 1.5rem;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.section-header h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--ion-color-dark);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.section-header p {
+  margin: 0;
+  color: var(--ion-color-medium);
+  font-size: 1rem;
+}
+
+.videos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.video-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.video-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.video-thumbnail {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+}
+
+.video-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-duration {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.play-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.7);
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.video-card:hover .play-overlay {
+  opacity: 1;
+}
+
+.play-overlay ion-icon {
+  font-size: 2rem;
+  color: white;
+}
+
+.video-info {
+  padding: 1rem;
+}
+
+.video-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ion-color-dark);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.video-channel {
+  margin: 0 0 0.5rem 0;
+  color: var(--ion-color-medium);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.video-stats {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--ion-color-medium);
+}
+
+.separator {
+  opacity: 0.5;
+}
+
+.relevance-score {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.relevance-score ion-icon {
+  font-size: 0.9rem;
+  color: #fbbf24;
+}
+
+.score-text {
+  font-size: 0.8rem;
+  color: var(--ion-color-medium);
+  margin-left: 0.25rem;
+}
+
+.video-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 0.25rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.video-card:hover .video-actions {
+  opacity: 1;
+}
+
+.video-actions ion-button {
+  --background: rgba(255,255,255,0.9);
+  --color: var(--ion-color-dark);
+  --border-radius: 50%;
+  width: 36px;
+  height: 36px;
+}
+
+.saved-section {
+  background: white;
+  margin: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+}
+
+.saved-section h3 {
+  margin: 0 0 1rem 0;
+  color: var(--ion-color-dark);
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.saved-videos-list {
+  background: transparent;
+}
+
+.saved-videos-list ion-item {
+  --background: #f8fafc;
+  --border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.saved-thumbnail {
+  width: 60px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.saved-date {
+  font-size: 0.8rem;
+  color: var(--ion-color-medium);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: var(--ion-color-medium);
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+  color: var(--ion-color-dark);
+  margin-bottom: 0.5rem;
+}
+
+.video-player-content {
+  --background: #000;
+}
+
+.video-player {
+  height: 100%;
+}
+
+.video-placeholder {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.7;
+}
+
+.play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  cursor: pointer;
+}
+
+.play-button ion-icon {
+  font-size: 4rem;
+  margin-bottom: 0.5rem;
+}
+
+.play-button p {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.video-details {
+  background: white;
+  padding: 1.5rem;
+}
+
+.video-details h2 {
+  margin: 0 0 0.5rem 0;
+  color: var(--ion-color-dark);
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.channel-name {
+  margin: 0 0 0.5rem 0;
+  color: var(--ion-color-primary);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.video-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
+}
+
+.video-description {
+  color: var(--ion-color-dark-shade);
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.video-actions-bar {
+  display: flex;
+  gap: 1rem;
+}
+
+.video-actions-bar ion-button {
+  --border-radius: 8px;
+  text-transform: none;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .videos-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .video-actions-bar {
+    flex-direction: column;
+  }
+  
+  .video-stats {
+    flex-wrap: wrap;
+  }
+  
+  .pdf-selector-section ion-segment {
+    font-size: 0.8rem;
+  }
+}

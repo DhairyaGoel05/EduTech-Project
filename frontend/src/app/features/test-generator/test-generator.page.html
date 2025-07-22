@@ -1,0 +1,298 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Test Generator</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="createNewTest()">
+        <ion-icon name="add-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="test-generator-content">
+  <!-- Test Creation Mode -->
+  <div class="test-creation" *ngIf="isCreating">
+    <div class="creation-header">
+      <h2>Create New Test</h2>
+      <p>Generate questions from your PDF or create custom questions</p>
+    </div>
+
+    <div class="test-form">
+      <ion-item>
+        <ion-label position="stacked">Test Title</ion-label>
+        <ion-input [(ngModel)]="newTest.title" placeholder="Enter test title"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Description</ion-label>
+        <ion-textarea [(ngModel)]="newTest.description" placeholder="Test description (optional)"></ion-textarea>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Time Limit (minutes)</ion-label>
+        <ion-input type="number" [(ngModel)]="newTest.timeLimit" placeholder="60"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Show Answers to Students</ion-label>
+        <ion-toggle [(ngModel)]="newTest.showAnswers" slot="end"></ion-toggle>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Allow Multiple Attempts</ion-label>
+        <ion-toggle [(ngModel)]="newTest.multipleAttempts" slot="end"></ion-toggle>
+      </ion-item>
+    </div>
+
+    <!-- Question Generation Options -->
+    <div class="generation-options">
+      <h3>Question Generation</h3>
+      <ion-segment [(ngModel)]="generationMode" (ionChange)="onGenerationModeChange($event)">
+        <ion-segment-button value="ai">
+          <ion-label>AI Generated</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="manual">
+          <ion-label>Manual</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+
+      <!-- AI Generation -->
+      <div *ngIf="generationMode === 'ai'" class="ai-generation">
+        <ion-item>
+          <ion-label position="stacked">Select PDF</ion-label>
+          <ion-select [(ngModel)]="selectedPDF" placeholder="Choose a PDF">
+            <ion-select-option *ngFor="let pdf of availablePDFs" [value]="pdf">
+              {{ pdf.name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Number of Questions</ion-label>
+          <ion-input type="number" [(ngModel)]="questionCount" placeholder="10"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Question Types</ion-label>
+          <ion-select [(ngModel)]="questionTypes" multiple="true">
+            <ion-select-option value="mcq">Multiple Choice</ion-select-option>
+            <ion-select-option value="short">Short Answer</ion-select-option>
+            <ion-select-option value="essay">Essay</ion-select-option>
+            <ion-select-option value="tf">True/False</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-button 
+          expand="block" 
+          (click)="generateQuestions()" 
+          [disabled]="!selectedPDF || generatingQuestions">
+          <ion-spinner *ngIf="generatingQuestions" name="crescent"></ion-spinner>
+          {{ generatingQuestions ? 'Generating...' : 'Generate Questions' }}
+        </ion-button>
+      </div>
+
+      <!-- Manual Creation -->
+      <div *ngIf="generationMode === 'manual'" class="manual-creation">
+        <ion-button expand="block" fill="outline" (click)="addQuestion()">
+          <ion-icon name="add-outline" slot="start"></ion-icon>
+          Add Question
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Questions List -->
+    <div class="questions-section" *ngIf="newTest.questions.length > 0">
+      <h3>Questions ({{ newTest.questions.length }})</h3>
+      
+      <div class="question-item" *ngFor="let question of newTest.questions; let i = index">
+        <div class="question-header">
+          <span class="question-number">{{ i + 1 }}</span>
+          <ion-button fill="clear" size="small" (click)="editQuestion(i)">
+            <ion-icon name="create-outline"></ion-icon>
+          </ion-button>
+          <ion-button fill="clear" size="small" color="danger" (click)="removeQuestion(i)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-button>
+        </div>
+        
+        <div class="question-content">
+          <h4>{{ question.question }}</h4>
+          <div class="question-type">{{ getQuestionTypeLabel(question.type) }}</div>
+          
+          <div *ngIf="question.type === 'mcq'" class="options">
+            <div *ngFor="let option of question.options; let j = index" class="option">
+              <ion-icon 
+                [name]="j === question.correctAnswer ? 'checkmark-circle' : 'ellipse-outline'"
+                [color]="j === question.correctAnswer ? 'success' : 'medium'">
+              </ion-icon>
+              {{ option }}
+            </div>
+          </div>
+          
+          <div *ngIf="question.type === 'short' || question.type === 'essay'" class="answer">
+            <strong>Answer:</strong> {{ question.answer }}
+          </div>
+          
+          <div *ngIf="question.type === 'tf'" class="tf-answer">
+            <strong>Answer:</strong> {{ question.answer ? 'True' : 'False' }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <ion-button expand="block" fill="outline" (click)="cancelCreation()">
+        Cancel
+      </ion-button>
+      <ion-button 
+        expand="block" 
+        (click)="saveTest()" 
+        [disabled]="!newTest.title || newTest.questions.length === 0">
+        Save Test
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Tests List -->
+  <div class="tests-list" *ngIf="!isCreating">
+    <div class="list-header">
+      <h2>My Tests</h2>
+      <p>Manage your created tests and view student results</p>
+    </div>
+
+    <div class="tests-grid">
+      <ion-card class="test-card" *ngFor="let test of tests" (click)="viewTest(test)">
+        <ion-card-header>
+          <ion-card-title>{{ test.title }}</ion-card-title>
+          <ion-card-subtitle>
+            {{ test.questions.length }} questions • {{ test.timeLimit }} min
+          </ion-card-subtitle>
+        </ion-card-header>
+        
+        <ion-card-content>
+          <p>{{ test.description || 'No description' }}</p>
+          
+          <div class="test-stats">
+            <div class="stat">
+              <ion-icon name="people-outline"></ion-icon>
+              <span>{{ test.attempts || 0 }} attempts</span>
+            </div>
+            <div class="stat">
+              <ion-icon name="analytics-outline"></ion-icon>
+              <span>{{ test.averageScore || 0 }}% avg</span>
+            </div>
+          </div>
+          
+          <div class="test-actions">
+            <ion-button fill="clear" size="small" (click)="editTest(test); $event.stopPropagation()">
+              <ion-icon name="create-outline"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear" size="small" (click)="duplicateTest(test); $event.stopPropagation()">
+              <ion-icon name="copy-outline"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear" size="small" color="danger" (click)="deleteTest(test); $event.stopPropagation()">
+              <ion-icon name="trash-outline"></ion-icon>
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <div class="empty-state" *ngIf="tests.length === 0">
+      <ion-icon name="document-text-outline" class="empty-icon"></ion-icon>
+      <h3>No tests created yet</h3>
+      <p>Create your first test to get started</p>
+      <ion-button (click)="createNewTest()">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Create Test
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Question Editor Modal -->
+  <ion-modal [isOpen]="showQuestionEditor" (didDismiss)="closeQuestionEditor()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{ editingQuestionIndex >= 0 ? 'Edit' : 'Add' }} Question</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeQuestionEditor()">
+              <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      
+      <ion-content class="question-editor">
+        <div class="editor-content">
+          <ion-item>
+            <ion-label position="stacked">Question Type</ion-label>
+            <ion-select [(ngModel)]="currentQuestion.type" (ionChange)="onQuestionTypeChange()">
+              <ion-select-option value="mcq">Multiple Choice</ion-select-option>
+              <ion-select-option value="short">Short Answer</ion-select-option>
+              <ion-select-option value="essay">Essay</ion-select-option>
+              <ion-select-option value="tf">True/False</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Question</ion-label>
+            <ion-textarea [(ngModel)]="currentQuestion.question" placeholder="Enter your question"></ion-textarea>
+          </ion-item>
+
+          <!-- Multiple Choice Options -->
+          <div *ngIf="currentQuestion.type === 'mcq'" class="mcq-options">
+            <h4>Options</h4>
+            <div *ngFor="let option of currentQuestion.options; let i = index" class="option-input">
+              <ion-item>
+                <ion-radio-group [(ngModel)]="currentQuestion.correctAnswer">
+                  <ion-radio [value]="i" slot="start"></ion-radio>
+                </ion-radio-group>
+                <ion-input [(ngModel)]="currentQuestion.options[i]" placeholder="Option {{ i + 1 }}"></ion-input>
+                <ion-button fill="clear" size="small" color="danger" (click)="removeOption(i)" slot="end">
+                  <ion-icon name="trash-outline"></ion-icon>
+                </ion-button>
+              </ion-item>
+            </div>
+            <ion-button fill="outline" (click)="addOption()" [disabled]="currentQuestion.options.length >= 6">
+              <ion-icon name="add-outline" slot="start"></ion-icon>
+              Add Option
+            </ion-button>
+          </div>
+
+          <!-- Short Answer / Essay -->
+          <div *ngIf="currentQuestion.type === 'short' || currentQuestion.type === 'essay'">
+            <ion-item>
+              <ion-label position="stacked">Sample Answer</ion-label>
+              <ion-textarea [(ngModel)]="currentQuestion.answer" placeholder="Enter sample answer"></ion-textarea>
+            </ion-item>
+          </div>
+
+          <!-- True/False -->
+          <div *ngIf="currentQuestion.type === 'tf'">
+            <ion-item>
+              <ion-label>Correct Answer</ion-label>
+              <ion-select [(ngModel)]="currentQuestion.answer" slot="end">
+                <ion-select-option [value]="true">True</ion-select-option>
+                <ion-select-option [value]="false">False</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </div>
+
+          <div class="editor-actions">
+            <ion-button expand="block" fill="outline" (click)="closeQuestionEditor()">
+              Cancel
+            </ion-button>
+            <ion-button expand="block" (click)="saveQuestion()" [disabled]="!isQuestionValid()">
+              {{ editingQuestionIndex >= 0 ? 'Update' : 'Add' }} Question
+            </ion-button>
+          </div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

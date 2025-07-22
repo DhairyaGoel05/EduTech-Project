@@ -1,0 +1,149 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>AI Chatbot</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="clearChat()">
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="chatbot-content">
+  <!-- PDF Selection -->
+  <div class="pdf-selector" *ngIf="!selectedPDF">
+    <div class="selector-content">
+      <ion-icon name="document-text-outline" class="selector-icon"></ion-icon>
+      <h3>Select a PDF to chat about</h3>
+      <p>Choose from your uploaded documents to start asking questions</p>
+      
+      <ion-list class="pdf-list">
+        <ion-item 
+          *ngFor="let pdf of availablePDFs" 
+          button 
+          (click)="selectPDF(pdf)"
+          class="pdf-item">
+          <ion-icon name="document-outline" slot="start"></ion-icon>
+          <ion-label>
+            <h3>{{ pdf.name }}</h3>
+            <p>{{ pdf.pages }} pages • Uploaded {{ pdf.uploadDate | date:'short' }}</p>
+          </ion-label>
+          <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+        </ion-item>
+      </ion-list>
+    </div>
+  </div>
+
+  <!-- Chat Interface -->
+  <div class="chat-interface" *ngIf="selectedPDF">
+    <!-- Selected PDF Header -->
+    <div class="selected-pdf-header">
+      <div class="pdf-info">
+        <ion-icon name="document-text-outline"></ion-icon>
+        <div>
+          <h4>{{ selectedPDF.name }}</h4>
+          <p>{{ selectedPDF.pages }} pages</p>
+        </div>
+      </div>
+      <ion-button fill="clear" size="small" (click)="changePDF()">
+        <ion-icon name="swap-horizontal-outline"></ion-icon>
+        Change PDF
+      </ion-button>
+    </div>
+
+    <!-- Chat Messages -->
+    <div class="chat-messages" #chatContainer>
+      <div 
+        *ngFor="let message of messages" 
+        class="message-wrapper"
+        [class.user-message]="message.type === 'user'"
+        [class.ai-message]="message.type === 'ai'">
+        
+        <div class="message-avatar" *ngIf="message.type === 'ai'">
+          <ion-icon name="sparkles-outline"></ion-icon>
+        </div>
+        
+        <div class="message-content">
+          <div class="message-bubble">
+            <p>{{ message.content }}</p>
+            <div class="message-actions" *ngIf="message.type === 'ai'">
+              <ion-button fill="clear" size="small" (click)="copyMessage(message.content)">
+                <ion-icon name="copy-outline"></ion-icon>
+              </ion-button>
+              <ion-button fill="clear" size="small" (click)="likeMessage(message)">
+                <ion-icon [name]="message.liked ? 'thumbs-up' : 'thumbs-up-outline'"></ion-icon>
+              </ion-button>
+            </div>
+          </div>
+          <div class="message-time">
+            {{ message.timestamp | date:'short' }}
+          </div>
+        </div>
+        
+        <div class="message-avatar" *ngIf="message.type === 'user'">
+          <ion-icon name="person-outline"></ion-icon>
+        </div>
+      </div>
+
+      <!-- Typing Indicator -->
+      <div class="message-wrapper ai-message" *ngIf="isTyping">
+        <div class="message-avatar">
+          <ion-icon name="sparkles-outline"></ion-icon>
+        </div>
+        <div class="message-content">
+          <div class="message-bubble typing-indicator">
+            <div class="typing-dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Questions -->
+    <div class="quick-questions" *ngIf="messages.length <= 1">
+      <h4>Quick Questions</h4>
+      <div class="question-chips">
+        <ion-chip 
+          *ngFor="let question of quickQuestions" 
+          (click)="askQuickQuestion(question)"
+          class="question-chip">
+          {{ question }}
+        </ion-chip>
+      </div>
+    </div>
+
+    <!-- Chat Input -->
+    <div class="chat-input-container">
+      <div class="chat-input">
+        <ion-item>
+          <ion-textarea 
+            [(ngModel)]="currentMessage" 
+            placeholder="Ask a question about the PDF..."
+            rows="1"
+            autoGrow="true"
+            maxlength="500"
+            (keydown.enter)="handleEnterKey($event)">
+          </ion-textarea>
+          <ion-button 
+            slot="end" 
+            fill="clear" 
+            (click)="sendMessage()"
+            [disabled]="!currentMessage.trim() || isTyping">
+            <ion-spinner *ngIf="isTyping" name="crescent"></ion-spinner>
+            <ion-icon *ngIf="!isTyping" name="send-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+        <div class="input-footer">
+          <span class="character-count">{{ currentMessage.length }}/500</span>
+          <span class="ai-notice">AI responses are generated based on PDF content</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

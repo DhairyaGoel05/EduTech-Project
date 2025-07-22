@@ -1,0 +1,196 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "~@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "~@ionic/angular/css/normalize.css";
+@import "~@ionic/angular/css/structure.css";
+@import "~@ionic/angular/css/typography.css";
+@import '~@ionic/angular/css/display.css';
+
+/* Optional CSS utils that can be commented out */
+@import "~@ionic/angular/css/padding.css";
+@import "~@ionic/angular/css/float-elements.css";
+@import "~@ionic/angular/css/text-alignment.css";
+@import "~@ionic/angular/css/text-transformation.css";
+@import "~@ionic/angular/css/flex-utils.css";
+
+/* Custom Global Styles */
+:root {
+  --ion-color-primary: #667eea;
+  --ion-color-primary-rgb: 102, 126, 234;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #5a6fce;
+  --ion-color-primary-tint: #7589ec;
+
+  --ion-color-secondary: #764ba2;
+  --ion-color-secondary-rgb: 118, 75, 162;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #68428f;
+  --ion-color-secondary-tint: #8459ab;
+
+  --ion-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+p {
+  line-height: 1.5;
+}
+
+/* Custom Components */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Utility Classes */
+.text-gradient {
+  background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ion-color-primary);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ion-color-primary-shade);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 0.5rem;
+  }
+}
+
+/* Loading States */
+.loading-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Custom Ion Components */
+ion-button {
+  --border-radius: 8px;
+  text-transform: none;
+  font-weight: 500;
+}
+
+ion-card {
+  --border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+ion-item {
+  --border-radius: 8px;
+}
+
+ion-modal {
+  --border-radius: 16px 16px 0 0;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ion-background-color: #1a1a1a;
+    --ion-background-color-rgb: 26, 26, 26;
+    --ion-text-color: #ffffff;
+    --ion-text-color-rgb: 255, 255, 255;
+    --ion-color-step-50: #262626;
+    --ion-color-step-100: #2d2d2d;
+    --ion-color-step-150: #333333;
+    --ion-color-step-200: #404040;
+    --ion-color-step-250: #4d4d4d;
+    --ion-color-step-300: #595959;
+    --ion-color-step-350: #666666;
+    --ion-color-step-400: #737373;
+    --ion-color-step-450: #808080;
+    --ion-color-step-500: #8c8c8c;
+    --ion-color-step-550: #999999;
+    --ion-color-step-600: #a6a6a6;
+    --ion-color-step-650: #b3b3b3;
+    --ion-color-step-700: #bfbfbf;
+    --ion-color-step-750: #cccccc;
+    --ion-color-step-800: #d9d9d9;
+    --ion-color-step-850: #e6e6e6;
+    --ion-color-step-900: #f2f2f2;
+    --ion-color-step-950: #ffffff;
+  }
+}

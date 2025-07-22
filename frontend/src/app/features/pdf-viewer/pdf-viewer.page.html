@@ -1,0 +1,202 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>PDF Viewer</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="uploadPDF()">
+        <ion-icon name="cloud-upload-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="pdf-viewer-content">
+  <!-- Upload Section -->
+  <div class="upload-section" *ngIf="!selectedPDF">
+    <div class="upload-area" (click)="uploadPDF()">
+      <ion-icon name="cloud-upload-outline" class="upload-icon"></ion-icon>
+      <h3>Upload PDF Document</h3>
+      <p>Click here to select a PDF file for AI analysis</p>
+      <ion-button fill="outline">
+        <ion-icon name="document-outline" slot="start"></ion-icon>
+        Choose File
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- PDF Viewer with Index -->
+  <div class="pdf-container" *ngIf="selectedPDF">
+    <div class="pdf-layout">
+      <!-- Index Sidebar -->
+      <div class="index-sidebar" [class.collapsed]="indexCollapsed">
+        <div class="index-header">
+          <h4>Table of Contents</h4>
+          <ion-button 
+            fill="clear" 
+            size="small" 
+            (click)="toggleIndex()">
+            <ion-icon [name]="indexCollapsed ? 'chevron-forward-outline' : 'chevron-back-outline'"></ion-icon>
+          </ion-button>
+        </div>
+        
+        <div class="index-content" *ngIf="!indexCollapsed">
+          <div class="index-loading" *ngIf="indexLoading">
+            <ion-spinner></ion-spinner>
+            <p>Generating AI index...</p>
+          </div>
+          
+          <ion-list *ngIf="!indexLoading && pdfIndex.length > 0">
+            <ion-item 
+              *ngFor="let item of pdfIndex; let i = index" 
+              button 
+              (click)="navigateToPage(item.page)"
+              [class.active]="currentPage === item.page">
+              <ion-label>
+                <h3>{{ item.title }}</h3>
+                <p>Page {{ item.page }}</p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </div>
+      </div>
+
+      <!-- PDF Viewer -->
+      <div class="pdf-viewer" [class.full-width]="indexCollapsed">
+        <div class="pdf-controls">
+          <ion-button fill="clear" (click)="previousPage()" [disabled]="currentPage <= 1">
+            <ion-icon name="chevron-back-outline"></ion-icon>
+          </ion-button>
+          
+          <span class="page-info">
+            Page {{ currentPage }} of {{ totalPages }}
+          </span>
+          
+          <ion-button fill="clear" (click)="nextPage()" [disabled]="currentPage >= totalPages">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </ion-button>
+          
+          <ion-button fill="clear" (click)="zoomOut()">
+            <ion-icon name="remove-outline"></ion-icon>
+          </ion-button>
+          
+          <span class="zoom-info">{{ Math.round(zoomLevel * 100) }}%</span>
+          
+          <ion-button fill="clear" (click)="zoomIn()">
+            <ion-icon name="add-outline"></ion-icon>
+          </ion-button>
+        </div>
+        
+        <div class="pdf-canvas-container">
+          <canvas #pdfCanvas class="pdf-canvas"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Features Panel -->
+    <div class="ai-features-panel">
+      <ion-segment [(ngModel)]="activeFeature" (ionChange)="onFeatureChange($event)">
+        <ion-segment-button value="summary">
+          <ion-label>Summary</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="questions">
+          <ion-label>Questions</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="chat">
+          <ion-label>Chat</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+
+      <div class="feature-content">
+        <!-- Summary -->
+        <div *ngIf="activeFeature === 'summary'" class="summary-content">
+          <div *ngIf="summaryLoading" class="loading-state">
+            <ion-spinner></ion-spinner>
+            <p>Generating AI summary...</p>
+          </div>
+          <div *ngIf="!summaryLoading && pdfSummary" class="summary-text">
+            <h4>Document Summary</h4>
+            <p>{{ pdfSummary }}</p>
+          </div>
+          <ion-button 
+            *ngIf="!summaryLoading && !pdfSummary" 
+            expand="block" 
+            (click)="generateSummary()">
+            Generate Summary
+          </ion-button>
+        </div>
+
+        <!-- Questions -->
+        <div *ngIf="activeFeature === 'questions'" class="questions-content">
+          <div *ngIf="questionsLoading" class="loading-state">
+            <ion-spinner></ion-spinner>
+            <p>Generating questions...</p>
+          </div>
+          <ion-list *ngIf="!questionsLoading && generatedQuestions.length > 0">
+            <ion-item *ngFor="let question of generatedQuestions; let i = index">
+              <ion-label class="ion-text-wrap">
+                <h3>{{ i + 1 }}. {{ question.question }}</h3>
+                <p *ngIf="question.showAnswer">{{ question.answer }}</p>
+                <ion-button 
+                  fill="clear" 
+                  size="small" 
+                  (click)="toggleAnswer(i)">
+                  {{ question.showAnswer ? 'Hide' : 'Show' }} Answer
+                </ion-button>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+          <ion-button 
+            *ngIf="!questionsLoading && generatedQuestions.length === 0" 
+            expand="block" 
+            (click)="generateQuestions()">
+            Generate Questions
+          </ion-button>
+        </div>
+
+        <!-- Chat -->
+        <div *ngIf="activeFeature === 'chat'" class="chat-content">
+          <div class="chat-messages" #chatMessages>
+            <div 
+              *ngFor="let message of chatMessages" 
+              class="message"
+              [class.user]="message.type === 'user'"
+              [class.ai]="message.type === 'ai'">
+              <div class="message-content">
+                <p>{{ message.content }}</p>
+                <span class="message-time">{{ message.timestamp | date:'short' }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="chat-input">
+            <ion-item>
+              <ion-input 
+                [(ngModel)]="chatInput" 
+                placeholder="Ask a question about the PDF..."
+                (keyup.enter)="sendChatMessage()">
+              </ion-input>
+              <ion-button 
+                slot="end" 
+                fill="clear" 
+                (click)="sendChatMessage()"
+                [disabled]="!chatInput.trim() || chatLoading">
+                <ion-spinner *ngIf="chatLoading" name="crescent"></ion-spinner>
+                <ion-icon *ngIf="!chatLoading" name="send-outline"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden file input -->
+  <input 
+    type="file" 
+    #fileInput 
+    accept=".pdf" 
+    style="display: none" 
+    (change)="onFileSelected($event)">
+</ion-content>
