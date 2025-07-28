@@ -6,6 +6,10 @@
   max-width: 500px;
   margin: 0 auto;
   padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100%;
 }
 
 .auth-header {
@@ -47,6 +51,7 @@
   --background-checked: rgba(var(--ion-color-primary-rgb), 0.1);
   --border-radius: 8px;
   margin: 4px;
+  text-transform: capitalize;
 }
 
 .auth-form {
@@ -60,8 +65,13 @@
 .auth-form ion-item {
   --background: transparent;
   --border-color: rgba(var(--ion-color-medium-rgb), 0.3);
+  --highlight-color-focused: var(--ion-color-primary);
   --border-radius: 8px;
   margin-bottom: 1rem;
+
+  ion-label[position="floating"] {
+    color: #888 !important;
+  }
 }
 
 .auth-form ion-item:last-of-type {

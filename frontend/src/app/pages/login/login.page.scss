@@ -1,0 +1,138 @@
+// Make the ion-content transparent to see the wrapper's background
+.login-content {
+  --background: transparent;
+}
+
+// This new wrapper will handle the background and centering
+.login-page-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(135deg, #e9f1ff, #d8e4f5);
+}
+
+.login-container {
+  max-width: 500px;
+  width: 100%;
+  padding: 2rem;
+  text-align: center;
+}
+
+.login-header {
+  margin-bottom: 2.5rem;
+  // Animation: Slide down from the top
+  animation: slideDown 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.login-logo {
+  font-size: 6rem;
+  margin-bottom: 1rem;
+  color: #5a67d8; // A slightly more vibrant purple-blue
+}
+
+.login-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.login-header p {
+  font-size: 1.1rem;
+  color: #718096;
+}
+
+.role-selection-container {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+  // Animation: Pop in with a delay
+  animation: popIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s both;
+}
+
+.role-card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  width: 150px;
+  cursor: pointer;
+  border: 2px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  &.selected {
+    border-color: #5a67d8;
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 10px 15px -3px rgba(90, 103, 216, 0.3), 0 4px 6px -2px rgba(90, 103, 216, 0.1);
+  }
+}
+
+.role-icon {
+  font-size: 4rem;
+  color: #5a67d8;
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.role-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.login-options {
+  margin-top: 2rem;
+  // Animation: Fade in and slide up
+  animation: fadeInUp 0.5s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #a0aec0;
+  margin: 1.5rem 0;
+
+  &::before, &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  span { padding: 0 1rem; }
+}
+
+.login-button {
+  --border-radius: 25px;
+  --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  height: 50px;
+  font-weight: 600;
+  text-transform: none;
+  font-size: 1.1rem;
+}
+
+.student-button { --background: #5a67d8; }
+.teacher-button { --background: #4c51bf; }
+.connect-button { --border-color: #5a67d8; --color: #5a67d8; }
+
+// Keyframe Animations
+@keyframes slideDown {
+  0% { transform: translateY(-50px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}

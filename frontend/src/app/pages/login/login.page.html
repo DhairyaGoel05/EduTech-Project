@@ -1,0 +1,48 @@
+<ion-content [fullscreen]="true" class="login-content">
+  <!-- This wrapper is key to centering the content vertically and horizontally -->
+  <div class="login-page-wrapper">
+    <div class="login-container">
+      <div class="login-header">
+        <ion-icon name="school" class="login-logo"></ion-icon>
+        <h1>Welcome to EduLink</h1>
+        <p>Choose your role to get started</p>
+      </div>
+
+      <!-- Interactive Role Selection Cards -->
+      <div class="role-selection-container">
+        <!-- Student Card -->
+        <div class="role-card" [class.selected]="userTypeSelection === 'student'" (click)="selectUserType('student')">
+          <ion-icon name="person-circle-outline" class="role-icon"></ion-icon>
+          <div class="role-title">Student</div>
+        </div>
+
+        <!-- Teacher Card -->
+        <div class="role-card" [class.selected]="userTypeSelection === 'teacher'" (click)="selectUserType('teacher')">
+          <ion-icon name="people-circle-outline" class="role-icon"></ion-icon>
+          <div class="role-title">Teacher</div>
+        </div>
+      </div>
+
+      <!-- Conditional Options for Student -->
+      <div *ngIf="userTypeSelection === 'student'" class="login-options">
+        <ion-button expand="block" class="login-button student-button" (click)="login('student')">
+          <ion-icon name="book-outline" slot="start"></ion-icon>
+          Join for Self-Study
+        </ion-button>
+        <div class="divider"><span>or</span></div>
+        <ion-button expand="block" fill="outline" class="login-button connect-button" (click)="login('student_connected')">
+          <ion-icon name="link-outline" slot="start"></ion-icon>
+          Connect with a Teacher
+        </ion-button>
+      </div>
+
+      <!-- Conditional Option for Teacher -->
+      <div *ngIf="userTypeSelection === 'teacher'" class="login-options">
+        <ion-button expand="block" class="login-button teacher-button" (click)="login('teacher')">
+          <ion-icon name="school-outline" slot="start"></ion-icon>
+          Join as a Teacher
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>

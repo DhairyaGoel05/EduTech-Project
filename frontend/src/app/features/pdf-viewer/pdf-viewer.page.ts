@@ -9,7 +9,10 @@ import { ToastController, LoadingController } from '@ionic/angular';
 export class PdfViewerPage implements OnInit {
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
   @ViewChild('pdfCanvas', { static: false }) pdfCanvas!: ElementRef;
-  @ViewChild('chatMessages', { static: false }) chatMessages!: ElementRef;
+  @ViewChild('chatContainer', { static: false }) chatContainer!: ElementRef;
+  
+  // FIX #1: Added this line to make the Math object available in the HTML
+  public Math = Math;
 
   selectedPDF: File | null = null;
   currentPage = 1;
@@ -152,6 +155,7 @@ export class PdfViewerPage implements OnInit {
     const question = this.chatInput;
     this.chatInput = '';
     this.chatLoading = true;
+    this.scrollToBottom(); // Scroll after user message is added
 
     // Simulate AI response
     setTimeout(() => {
@@ -162,16 +166,15 @@ export class PdfViewerPage implements OnInit {
       };
       this.chatMessages.push(aiResponse);
       this.chatLoading = false;
-      this.scrollToBottom();
+      this.scrollToBottom(); // Scroll after AI response is added
     }, 2000);
-
-    this.scrollToBottom();
   }
 
   scrollToBottom() {
     setTimeout(() => {
-      if (this.chatMessages) {
-        this.chatMessages.nativeElement.scrollTop = this.chatMessages.nativeElement.scrollHeight;
+      // FIX #2: Changed this to use `chatContainer` which is the correct ElementRef
+      if (this.chatContainer && this.chatContainer.nativeElement) {
+        this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight;
       }
     }, 100);
   }

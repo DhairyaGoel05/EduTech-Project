@@ -21,10 +21,12 @@ import { AuthModule } from '@auth0/auth0-angular';
     IonicStorageModule.forRoot(),
     AppRoutingModule,
     AuthModule.forRoot({
-      domain: 'your-auth0-domain.auth0.com',
-      clientId: 'your-client-id',
+      // IMPORTANT: Replace these with your actual Auth0 credentials
+      domain: 'dev-u5h8facf0w2gpyi4.us.auth0.com',
+      clientId: '1VJIJSK4lmnBJLXYedS6K6FrlOFXrPMT',
       authorizationParams: {
-        redirect_uri: window.location.origin
+        // THIS IS THE CORRECTED LINE
+        redirect_uri: window.location.origin + '/callback'
       }
     })
   ],

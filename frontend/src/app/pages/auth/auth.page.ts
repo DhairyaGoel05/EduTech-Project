@@ -13,6 +13,7 @@ export class AuthPage implements OnInit {
   userType = 'student';
   isLoading = false;
 
+  // This object is correctly initialized with empty strings.
   formData = {
     email: '',
     password: '',

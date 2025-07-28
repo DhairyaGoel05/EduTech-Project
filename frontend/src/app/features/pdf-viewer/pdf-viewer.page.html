@@ -13,7 +13,6 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="pdf-viewer-content">
-  <!-- Upload Section -->
   <div class="upload-section" *ngIf="!selectedPDF">
     <div class="upload-area" (click)="uploadPDF()">
       <ion-icon name="cloud-upload-outline" class="upload-icon"></ion-icon>
@@ -26,10 +25,8 @@
     </div>
   </div>
 
-  <!-- PDF Viewer with Index -->
   <div class="pdf-container" *ngIf="selectedPDF">
     <div class="pdf-layout">
-      <!-- Index Sidebar -->
       <div class="index-sidebar" [class.collapsed]="indexCollapsed">
         <div class="index-header">
           <h4>Table of Contents</h4>
@@ -62,7 +59,6 @@
         </div>
       </div>
 
-      <!-- PDF Viewer -->
       <div class="pdf-viewer" [class.full-width]="indexCollapsed">
         <div class="pdf-controls">
           <ion-button fill="clear" (click)="previousPage()" [disabled]="currentPage <= 1">
@@ -94,7 +90,6 @@
       </div>
     </div>
 
-    <!-- AI Features Panel -->
     <div class="ai-features-panel">
       <ion-segment [(ngModel)]="activeFeature" (ionChange)="onFeatureChange($event)">
         <ion-segment-button value="summary">
@@ -109,7 +104,6 @@
       </ion-segment>
 
       <div class="feature-content">
-        <!-- Summary -->
         <div *ngIf="activeFeature === 'summary'" class="summary-content">
           <div *ngIf="summaryLoading" class="loading-state">
             <ion-spinner></ion-spinner>
@@ -127,7 +121,6 @@
           </ion-button>
         </div>
 
-        <!-- Questions -->
         <div *ngIf="activeFeature === 'questions'" class="questions-content">
           <div *ngIf="questionsLoading" class="loading-state">
             <ion-spinner></ion-spinner>
@@ -155,9 +148,8 @@
           </ion-button>
         </div>
 
-        <!-- Chat -->
         <div *ngIf="activeFeature === 'chat'" class="chat-content">
-          <div class="chat-messages" #chatMessages>
+          <div class="chat-messages" #chatContainer>
             <div 
               *ngFor="let message of chatMessages" 
               class="message"
@@ -192,7 +184,6 @@
     </div>
   </div>
 
-  <!-- Hidden file input -->
   <input 
     type="file" 
     #fileInput 

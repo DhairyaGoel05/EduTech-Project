@@ -88,7 +88,8 @@ export class ChatbotPage implements OnInit, AfterViewChecked {
     this.sendMessage();
   }
 
-  handleEnterKey(event: KeyboardEvent) {
+  // THIS IS THE CORRECTED LINE
+  handleEnterKey(event: any) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       this.sendMessage();

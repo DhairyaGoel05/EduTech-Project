@@ -1,9 +1,9 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/landing"></ion-back-button>
+      <ion-back-button defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ isLogin ? 'Sign In' : 'Sign Up' }}</ion-title>
+    <ion-title>{{ isLogin ? 'Log In' : 'Sign Up' }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,156 +11,96 @@
   <div class="auth-container">
     <div class="auth-header">
       <ion-icon name="school-outline" class="auth-logo"></ion-icon>
-      <h1>EduLink</h1>
-      <p>{{ isLogin ? 'Welcome back!' : 'Join our learning community' }}</p>
+      <h1>{{ isLogin ? 'Welcome Back!' : 'Join our learning community' }}</h1>
+      <p>{{ isLogin ? 'Log in to continue your journey' : 'Create an account to get started' }}</p>
     </div>
 
+    <!-- User Type Selector (only for signup) -->
     <div class="user-type-selector" *ngIf="!isLogin">
-      <ion-segment [(ngModel)]="userType" (ionChange)="onUserTypeChange($event)">
+      <ion-segment (ionChange)="onUserTypeChange($event)" [value]="userType">
         <ion-segment-button value="student">
-          <ion-icon name="person-outline"></ion-icon>
+          <ion-icon name="person-circle-outline"></ion-icon>
           <ion-label>Student</ion-label>
         </ion-segment-button>
         <ion-segment-button value="teacher">
-          <ion-icon name="people-outline"></ion-icon>
+          <ion-icon name="people-circle-outline"></ion-icon>
           <ion-label>Teacher</ion-label>
         </ion-segment-button>
       </ion-segment>
     </div>
 
-    <form class="auth-form" (ngSubmit)="onSubmit()">
-      <!-- Basic Info -->
-      <ion-item>
-        <ion-label position="stacked">Email</ion-label>
-        <ion-input 
-          type="email" 
-          [(ngModel)]="formData.email" 
-          name="email" 
-          required>
-        </ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Password</ion-label>
-        <ion-input 
-          type="password" 
-          [(ngModel)]="formData.password" 
-          name="password" 
-          required>
-        </ion-input>
-      </ion-item>
-
-      <!-- Additional fields for signup -->
-      <div *ngIf="!isLogin">
+    <!-- Main Authentication Form -->
+    <div class="auth-form">
+      <form #form="ngForm" (ngSubmit)="onSubmit()">
+        <!-- Common Fields -->
         <ion-item>
-          <ion-label position="stacked">Full Name</ion-label>
-          <ion-input 
-            type="text" 
-            [(ngModel)]="formData.fullName" 
-            name="fullName" 
-            required>
-          </ion-input>
+          <ion-label position="floating">Email</ion-label>
+          <ion-input type="email" [(ngModel)]="formData.email" name="email" required autocomplete="off"></ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-label position="stacked">Phone Number</ion-label>
-          <ion-input 
-            type="tel" 
-            [(ngModel)]="formData.phone" 
-            name="phone">
-          </ion-input>
+          <ion-label position="floating">Password</ion-label>
+          <ion-input type="password" [(ngModel)]="formData.password" name="password" required autocomplete="off"></ion-input>
         </ion-item>
 
-        <!-- Student specific fields -->
-        <div *ngIf="userType === 'student'">
+        <!-- Signup Fields -->
+        <div *ngIf="!isLogin">
           <ion-item>
-            <ion-label position="stacked">Grade/Class</ion-label>
-            <ion-select [(ngModel)]="formData.grade" name="grade">
-              <ion-select-option value="9">Grade 9</ion-select-option>
-              <ion-select-option value="10">Grade 10</ion-select-option>
-              <ion-select-option value="11">Grade 11</ion-select-option>
-              <ion-select-option value="12">Grade 12</ion-select-option>
-              <ion-select-option value="college">College</ion-select-option>
-            </ion-select>
+            <ion-label position="floating">Full Name</ion-label>
+            <ion-input type="text" [(ngModel)]="formData.fullName" name="fullName" required autocomplete="off"></ion-input>
+          </ion-item>
+          
+          <ion-item>
+            <ion-label position="floating">Phone Number</ion-label>
+            <ion-input type="tel" [(ngModel)]="formData.phone" name="phone" required autocomplete="off"></ion-input>
+          </ion-item>
+          
+          <ion-item>
+            <ion-label position="floating">School/Institution</ion-label>
+            <ion-input type="text" [(ngModel)]="formData.institution" name="institution" required autocomplete="off"></ion-input>
           </ion-item>
 
-          <ion-item>
-            <ion-label position="stacked">School/Institution</ion-label>
-            <ion-input 
-              type="text" 
-              [(ngModel)]="formData.institution" 
-              name="institution">
-            </ion-input>
-          </ion-item>
+          <!-- Student Specific Fields -->
+          <div *ngIf="userType === 'student'">
+            <ion-item>
+              <ion-label position="floating">Grade/Class</ion-label>
+              <ion-input type="text" [(ngModel)]="formData.grade" name="grade" autocomplete="off"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Subjects of Interest</ion-label>
+              <ion-input type="text" [(ngModel)]="formData.subjects" name="subjects" autocomplete="off"></ion-input>
+            </ion-item>
+          </div>
 
-          <ion-item>
-            <ion-label position="stacked">Subjects of Interest</ion-label>
-            <ion-textarea 
-              [(ngModel)]="formData.subjects" 
-              name="subjects"
-              placeholder="e.g., Mathematics, Physics, Chemistry">
-            </ion-textarea>
-          </ion-item>
+          <!-- Teacher Specific Fields -->
+          <div *ngIf="userType === 'teacher'">
+            <ion-item>
+              <ion-label position="floating">Qualification</ion-label>
+              <ion-input type="text" [(ngModel)]="formData.qualification" name="qualification" autocomplete="off"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Years of Experience</ion-label>
+              <ion-input type="number" [(ngModel)]="formData.experience" name="experience" autocomplete="off"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Subjects Taught</ion-label>
+              <ion-input type="text" [(ngModel)]="formData.teachingSubjects" name="teachingSubjects" autocomplete="off"></ion-input>
+            </ion-item>
+          </div>
         </div>
-
-        <!-- Teacher specific fields -->
-        <div *ngIf="userType === 'teacher'">
-          <ion-item>
-            <ion-label position="stacked">Teaching Experience (Years)</ion-label>
-            <ion-input 
-              type="number" 
-              [(ngModel)]="formData.experience" 
-              name="experience">
-            </ion-input>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="stacked">Subjects Teaching</ion-label>
-            <ion-textarea 
-              [(ngModel)]="formData.teachingSubjects" 
-              name="teachingSubjects"
-              placeholder="e.g., Mathematics, Physics, Chemistry">
-            </ion-textarea>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="stacked">Institution/School</ion-label>
-            <ion-input 
-              type="text" 
-              [(ngModel)]="formData.institution" 
-              name="institution">
-            </ion-input>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="stacked">Qualification</ion-label>
-            <ion-input 
-              type="text" 
-              [(ngModel)]="formData.qualification" 
-              name="qualification"
-              placeholder="e.g., M.Ed, B.Ed, PhD">
-            </ion-input>
-          </ion-item>
-        </div>
-      </div>
-
-      <ion-button 
-        expand="block" 
-        type="submit" 
-        class="auth-button"
-        [disabled]="isLoading">
-        <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
-        {{ isLogin ? 'Sign In' : 'Create Account' }}
-      </ion-button>
-    </form>
+        
+        <ion-button class="auth-button" type="submit" expand="block" [disabled]="form.invalid || isLoading">
+          <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+          <span *ngIf="!isLoading">{{ isLogin ? 'Log In' : 'Create Account' }}</span>
+        </ion-button>
+      </form>
+    </div>
 
     <div class="auth-footer">
-      <p>
-        {{ isLogin ? "Don't have an account?" : "Already have an account?" }}
-        <ion-button fill="clear" (click)="toggleAuthMode()">
-          {{ isLogin ? 'Sign Up' : 'Sign In' }}
-        </ion-button>
-      </p>
+      <p>{{ isLogin ? 'Don\'t have an account?' : 'Already have an account?' }}</p>
+      <ion-button fill="clear" (click)="toggleAuthMode()">
+        {{ isLogin ? 'Sign Up' : 'Log In' }}
+      </ion-button>
     </div>
   </div>
 </ion-content>
