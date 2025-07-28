@@ -2,9 +2,10 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ToastController, LoadingController } from '@ionic/angular';
 
 @Component({
-  selector: 'app-pdf-viewer',
-  templateUrl: './pdf-viewer.page.html',
-  styleUrls: ['./pdf-viewer.page.scss'],
+    selector: 'app-pdf-viewer',
+    templateUrl: './pdf-viewer.page.html',
+    styleUrls: ['./pdf-viewer.page.scss'],
+    standalone: false
 })
 export class PdfViewerPage implements OnInit {
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;

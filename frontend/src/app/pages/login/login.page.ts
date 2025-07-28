@@ -4,9 +4,10 @@ import { AuthService } from '@auth0/auth0-angular';
 import { filter } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
+    selector: 'app-login',
+    templateUrl: './login.page.html',
+    styleUrls: ['./login.page.scss'],
+    standalone: false
 })
 export class LoginPage implements OnInit {
   userTypeSelection: 'student' | 'teacher' | null = null;

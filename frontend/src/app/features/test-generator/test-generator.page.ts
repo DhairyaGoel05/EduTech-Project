@@ -3,9 +3,10 @@ import { ToastController, AlertController } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
 
 @Component({
-  selector: 'app-test-generator',
-  templateUrl: './test-generator.page.html',
-  styleUrls: ['./test-generator.page.scss'],
+    selector: 'app-test-generator',
+    templateUrl: './test-generator.page.html',
+    styleUrls: ['./test-generator.page.scss'],
+    standalone: false
 })
 export class TestGeneratorPage implements OnInit {
   isCreating = false;

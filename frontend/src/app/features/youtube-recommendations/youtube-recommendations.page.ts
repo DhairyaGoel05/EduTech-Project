@@ -3,9 +3,10 @@ import { ToastController } from '@ionic/angular';
 import { Browser } from '@capacitor/browser';
 
 @Component({
-  selector: 'app-youtube-recommendations',
-  templateUrl: './youtube-recommendations.page.html',
-  styleUrls: ['./youtube-recommendations.page.scss'],
+    selector: 'app-youtube-recommendations',
+    templateUrl: './youtube-recommendations.page.html',
+    styleUrls: ['./youtube-recommendations.page.scss'],
+    standalone: false
 })
 export class YoutubeRecommendationsPage implements OnInit {
   selectedPDFId: number = 1;

@@ -3,9 +3,10 @@ import { ToastController, AlertController } from '@ionic/angular';
 import { Clipboard } from '@capacitor/clipboard';
 
 @Component({
-  selector: 'app-chatbot',
-  templateUrl: './chatbot.page.html',
-  styleUrls: ['./chatbot.page.scss'],
+    selector: 'app-chatbot',
+    templateUrl: './chatbot.page.html',
+    styleUrls: ['./chatbot.page.scss'],
+    standalone: false
 })
 export class ChatbotPage implements OnInit, AfterViewChecked {
   @ViewChild('chatContainer', { static: false }) chatContainer!: ElementRef;
