@@ -5,27 +5,26 @@ import { AuthGuard } from '@auth0/auth0-angular';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'landing', // This line makes the landing page the default.
+    redirectTo: 'landing',
     pathMatch: 'full'
   },
   {
-    path: 'landing', // This defines the route for your beautiful landing page.
+    path: 'landing',
     loadChildren: () => import('./pages/landing/landing.module').then(m => m.LandingPageModule)
   },
   {
-    path: 'login', // This is the login page the user will navigate to.
+    path: 'login',
     loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
   },
   {
     path: 'dashboard',
     loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardPageModule),
-    canActivate: [AuthGuard] // This protects the dashboard.
+    canActivate: [AuthGuard]
   },
   {
-    path: 'callback', // This is for Auth0 to use after login.
+    path: 'callback',
     redirectTo: 'dashboard'
   },
-  // All other feature routes should also be protected.
   {
     path: 'pdf-viewer',
     loadChildren: () => import('./features/pdf-viewer/pdf-viewer.module').then(m => m.PdfViewerPageModule),
